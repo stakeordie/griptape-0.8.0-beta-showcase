@@ -87,6 +87,7 @@ export default defineComponent({
 
     async function createPermit() {
       await enablePermit(sample, ['owner']);
+      sampleHasPermit.value = hasPermit(sample);
     }
 
     async function getTokens() {
