@@ -1,21 +1,24 @@
 import {
-  createContract,
+  BaseContract,
   ContractDefinition,
-  Context,
   ContractQueryRequest,
-  BaseContract
+  createContract
 } from '@stakeordie/griptape.js';
 
+interface TokensListResponse {
+  token_list: { tokens: string [] };
+}
+
 interface SampleContract extends BaseContract {
-  getTokens(): Promise<{ token_list: { tokens: string[] }}>;
+  getTokens(): Promise<TokensListResponse>;
 }
 
 const sampleDef: ContractDefinition = {
-  queries:{
-    getTokens({ address: owner, permit }: Context): ContractQueryRequest {
+  queries: {
+    getTokens({ address: owner, permit }): ContractQueryRequest {
       const query = { tokens: { owner } };
       return { with_permit: { query, permit } };
-    },
+    }
   }
 };
 

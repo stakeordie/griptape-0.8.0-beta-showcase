@@ -32,6 +32,11 @@
   <button @click="getTokens" :disabled="queryLoading">Get Tokens</button>
   <br>
   <pre v-if="tokens">Response: {{ tokens.join(', ') }}</pre>
+
+  <br>
+  <br>
+
+  <button @click="suggestChain">Suggest chain</button>
 </template>
 
 <script lang="ts">
@@ -44,10 +49,12 @@ import {
   getNativeCoinBalance,
   coinConvert,
   enablePermit,
-  hasPermit
+  hasPermit,
+  getKeplr
 } from '@stakeordie/griptape.js';
 import { sscrt } from '@/contracts/sscrt';
 import { sample } from '@/contracts/sample';
+import { stkd } from '@/contracts/stkd';
 
 export default defineComponent({
   setup() {
@@ -97,16 +104,68 @@ export default defineComponent({
       queryLoading.value = false;
     }
 
-    onMounted(() => {
+    async function suggestChain() {
+      const keplr = await getKeplr();
+      if (!keplr) throw new Error('No Keplr');
+      await keplr.experimentalSuggestChain({
+        chainId: 'supernova-2',
+        chainName: 'supernova-2',
+        rpc: 'http://bootstrap.supernova.enigma.co:26656',
+        rest: 'http://bootstrap.supernova.enigma.co:1317',
+        bip44: {
+          coinType: 529,
+        },
+        coinType: 529,
+        stakeCurrency: {
+          coinDenom: 'SCRT',
+          coinMinimalDenom: 'uscrt',
+          coinDecimals: 6,
+        },
+        bech32Config: {
+          bech32PrefixAccAddr: 'secret',
+          bech32PrefixAccPub: 'secretpub',
+          bech32PrefixValAddr: 'secretvaloper',
+          bech32PrefixValPub: 'secretvaloperpub',
+          bech32PrefixConsAddr: 'secretvalcons',
+          bech32PrefixConsPub: 'secretvalconspub',
+        },
+        currencies: [
+          {
+            coinDenom: 'SCRT',
+            coinMinimalDenom: 'uscrt',
+            coinDecimals: 6,
+          },
+        ],
+        feeCurrencies: [
+          {
+            coinDenom: 'SCRT',
+            coinMinimalDenom: 'uscrt',
+            coinDecimals: 6,
+          },
+        ],
+        gasPriceStep: {
+          low: 0.1,
+          average: 0.25,
+          high: 0.4,
+        },
+        features: ['secretwasm'],
+      });
+    }
 
+    onMounted(() => {
       onAccountAvailable(() => {
+        console.log('On account available');
         connected.value = true;
         sampleHasPermit.value = hasPermit(sample);
+
+        sscrt.getTokenInfo().then(res => console.log(res));
+        stkd.getStakingInfo().then(res => console.log(res));
 
         fetchBalance();
       });
 
       onAccountDisconnect(() => {
+        console.log('On account disconnect');
         connected.value = false;
       });
     });
@@ -125,7 +184,8 @@ export default defineComponent({
       rawAmount,
       loading,
       sampleHasPermit,
-      queryLoading
+      queryLoading,
+      suggestChain
     };
   }
 });

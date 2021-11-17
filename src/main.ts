@@ -8,12 +8,13 @@ import {
 } from '@stakeordie/griptape.js';
 
 const config: Config = {
-  restUrl: 'https://api.holodeck.stakeordie.com',
+  restUrl: 'http://bootstrap.supernova.enigma.co:1317',
   broadcastMode: BroadcastMode.Sync
 };
 const provider = getKeplrAccountProvider();
 function runApp() {
-  createApp(App).mount('#app')
+  createApp(App)
+    .mount('#app');
 }
 
 // It still supports `restUrl` as the first parameter
