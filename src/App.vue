@@ -108,10 +108,10 @@ export default defineComponent({
       const keplr = await getKeplr();
       if (!keplr) throw new Error('No Keplr');
       await keplr.experimentalSuggestChain({
-        chainId: 'supernova-2',
-        chainName: 'supernova-2',
-        rpc: 'http://bootstrap.supernova.enigma.co:26656',
-        rest: 'http://bootstrap.supernova.enigma.co:1317',
+        chainId: 'pulsar-1',
+        chainName: 'pulsar-1',
+        rpc: 'https://rpc.pulsar.stakeordie.com',
+        rest: 'https://api.pulsar.stakeordie.com',
         bip44: {
           coinType: 529,
         },
