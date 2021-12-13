@@ -8,8 +8,8 @@ import {
 } from '@stakeordie/griptape.js';
 
 const config: Config = {
-  restUrl: 'http://bootstrap.supernova.enigma.co:1317',
-  broadcastMode: BroadcastMode.Sync
+  restUrl: 'https://api.pulsar.stakeordie.com',
+  broadcastMode: BroadcastMode.Block
 };
 const provider = getKeplrAccountProvider();
 function runApp() {

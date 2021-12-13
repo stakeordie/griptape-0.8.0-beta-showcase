@@ -37,6 +37,11 @@
   <br>
 
   <button @click="suggestChain">Suggest chain</button>
+
+  <br>
+  <br>
+
+  <button @click="doSend">Send</button>
 </template>
 
 <script lang="ts">
@@ -52,8 +57,7 @@ import {
   hasPermit,
   getKeplr
 } from '@stakeordie/griptape.js';
-import { sscrt } from '@/contracts/sscrt';
-import { sample } from '@/contracts/sample';
+import { sample, sscrt } from '@/contracts/sample';
 import { stkd } from '@/contracts/stkd';
 
 export default defineComponent({
@@ -63,7 +67,7 @@ export default defineComponent({
     const loading = ref(false);
     const rawAmount = ref<string>();
     const tokenInfo = ref();
-    const tokens = ref<string[]>();
+    const tokens = ref<number>();
     const sampleHasPermit = ref(false);
     const queryLoading = ref(false);
 
@@ -99,9 +103,15 @@ export default defineComponent({
 
     async function getTokens() {
       queryLoading.value = true;
-      const res = await sample.getTokens();
-      tokens.value = res.token_list.tokens;
+      const res = await sample.getNftDossier('1');
+      console.log(res);
       queryLoading.value = false;
+    }
+
+    async function doSend() {
+      const balance = coinConvert(10, 6, 'machine');
+      const res = await sscrt.send('secret1yws9gdngemvd0juqt328x2lrqq79sv24ew0z4j', balance);
+      console.log(res);
     }
 
     async function suggestChain() {
@@ -185,7 +195,8 @@ export default defineComponent({
       loading,
       sampleHasPermit,
       queryLoading,
-      suggestChain
+      suggestChain,
+      doSend
     };
   }
 });
