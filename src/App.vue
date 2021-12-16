@@ -120,8 +120,8 @@ export default defineComponent({
       await keplr.experimentalSuggestChain({
         chainId: 'pulsar-1',
         chainName: 'pulsar-1',
-        rpc: 'https://rpc.pulsar.stakeordie.com',
-        rest: 'https://api.pulsar.stakeordie.com',
+        rpc: 'https://rpc.pulsar.griptapejs.com',
+        rest: 'https://api.pulsar.griptapejs.com',
         bip44: {
           coinType: 529,
         },
